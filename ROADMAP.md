@@ -10,16 +10,17 @@
 - [x] Return corrected text and important changes.
 - [x] Add basic API error handling.
 - [x] Measure execution time.
-- [ ] Fix prompt encoding if needed.
+- [x] Verify prompt encoding in editor.
 - [x] Move model name to a constant.
 - [x] Improve variable names for clarity.
 
 ## v0.2 - Configuration Basics
 
-- [ ] Add `requirements.txt`.
-- [ ] Add `.gitignore`.
-- [ ] Add `.env` support.
-- [ ] Read model name from configuration.
+- [x] Add `requirements.txt`.
+- [x] Add `.gitignore`.
+- [x] Add `.env` support.
+- [x] Read model name from configuration.
+- [x] Validate missing Gemini API key.
 - [ ] Add a mock provider for testing without API calls.
 
 ## v0.3 - Provider Design
@@ -32,11 +33,11 @@
 
 ## v0.4 - Clipboard Workflow
 
-- [ ] Add `pyperclip`.
-- [ ] Read text from clipboard.
-- [ ] Correct clipboard text.
-- [ ] Copy corrected text back to clipboard.
-- [ ] Add safe mode as the default behavior.
+- [x] Add `pyperclip`.
+- [x] Read text from clipboard.
+- [x] Correct clipboard text.
+- [x] Copy corrected text back to clipboard.
+- [x] Add safe mode as the default behavior.
 
 ## v0.5 - Local Provider Exploration
 

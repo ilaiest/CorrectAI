@@ -1,7 +1,10 @@
 from google import genai
+import os
+from dotenv import load_dotenv
 
-GEMINI_MODEL = "gemini-3.1-flash-lite-preview"
-
+load_dotenv()
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-3.1-flash-lite-preview")
 
 def text_corrector(text):
     prompt = f"""
@@ -12,12 +15,14 @@ Texto: {text}
 """
 
     model_output = call_gemini_api(prompt)
-    return  {"respuesta": model_output}
+    return  {"response": model_output}
 
 
 def call_gemini_api(prompt):
+    if not GEMINI_API_KEY:
+        return "API key not configured. Please check your settings."
     try:
-        client = genai.Client()
+        client = genai.Client(api_key=GEMINI_API_KEY)
         api_response = client.models.generate_content(
             model=GEMINI_MODEL,
             contents=prompt
