@@ -23,7 +23,13 @@
 - [x] Validate missing Gemini API key.
 - [ ] Add a mock provider for testing without API calls.
 
-## v0.3 - Provider Design
+## v0.3 - Code Cleanup
+
+- [x] Extract shared correction timing logic.
+- [ ] Reduce duplicated input validation patterns.
+- [ ] Improve terminal output formatting.
+
+## v0.5 - Provider Design
 
 - [ ] Define a common provider interface.
 - [ ] Move Gemini logic into a provider module.
@@ -39,14 +45,14 @@
 - [x] Copy corrected text back to clipboard.
 - [x] Add safe mode as the default behavior.
 
-## v0.5 - Local Provider Exploration
+## v0.6 - Local Provider Exploration
 
 - [ ] Test Ollama integration.
 - [ ] Try a small local model.
 - [ ] Compare speed and correction quality.
 - [ ] Document local setup limitations.
 
-## v0.6 - Hotkey Runner
+## v0.7 - Hotkey Runner
 
 - [ ] Explore `pynput` or alternatives.
 - [ ] Add a background runner.
@@ -54,7 +60,7 @@
 - [ ] Add safe clipboard hotkey mode.
 - [ ] Consider optional auto-replace mode.
 
-## v0.7 - Minimal GUI
+## v0.8 - Minimal GUI
 
 - [ ] Add a small settings window.
 - [ ] Configure provider.
