@@ -11,3 +11,6 @@ venv/
 
 # Editor Files
 .vscode/
+
+#Kiro Chat
+CorrectAI.json

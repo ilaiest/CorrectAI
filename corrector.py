@@ -1,4 +1,4 @@
-from providers.gemini_provider import call_gemini_api
+from providers.gemini_provider import GeminiProvider
 from config import ACTIVE_PROVIDER as model_option
 
 def text_corrector(text):
@@ -9,7 +9,8 @@ Cambios importantes: máximo 3.
 Texto: {text}
 """
     if model_option == "gemini":
-        model_output = call_gemini_api(prompt)
+        gemini= GeminiProvider()
+        model_output = gemini.call_api(prompt)
     elif model_option == "bedrock":
         # Handle other models if needed
         print("Bedrock model selected, but not implemented yet.")

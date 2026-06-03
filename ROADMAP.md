@@ -31,10 +31,11 @@
 
 ## v0.5 - Provider Design
 
-- [ ] Define a common provider interface.
-- [ ] Move Gemini logic into a provider module.
-- [ ] Add provider selection.
+- [x] Define a common provider interface.
+- [x] Move Gemini logic into a provider module.
+- [x] Add provider selection.
 - [ ] Add provider-specific error messages.
+
 - [ ] Document provider setup.
 
 ## v0.4 - Clipboard Workflow
@@ -54,10 +55,10 @@
 
 ## v0.7 - Hotkey Runner
 
-- [ ] Explore `pynput` or alternatives.
-- [ ] Add a background runner.
-- [ ] Configure a global hotkey.
-- [ ] Add safe clipboard hotkey mode.
+- [x] Explore `pynput` or alternatives.
+- [x] Add a background runner.
+- [x] Configure a global hotkey.
+- [x] Add safe clipboard hotkey mode.
 - [ ] Consider optional auto-replace mode.
 
 ## v0.8 - Minimal GUI
