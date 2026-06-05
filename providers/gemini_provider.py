@@ -1,15 +1,15 @@
 from google import genai
-from config import GEMINI_API_KEY, GEMINI_MODEL
+from config import API_KEY, MODEL
 from base  import BaseProvider
 
 class GeminiProvider(BaseProvider):
     def call_api(self, prompt):
-        if not GEMINI_API_KEY:
+        if not API_KEY:
             return "API key not configured. Please check your settings."
         try:
-            client = genai.Client(api_key=GEMINI_API_KEY)
+            client = genai.Client(api_key=API_KEY)
             api_response = client.models.generate_content(
-                model=GEMINI_MODEL,
+                model=MODEL,
                 contents=prompt
             )
             return api_response.text

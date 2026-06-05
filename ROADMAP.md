@@ -63,9 +63,9 @@
 
 ## v0.8 - Minimal GUI
 
-- [ ] Add a small settings window.
-- [ ] Configure provider.
-- [ ] Configure API key.
-- [ ] Configure model.
+- [x] Add a small settings window.
+- [x] Configure provider.
+- [x] Configure API key.
+- [x] Configure model.
 - [ ] Test provider connection.
-- [ ] Configure hotkey.
+- [x] Configure hotkey.
