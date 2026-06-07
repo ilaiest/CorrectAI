@@ -30,7 +30,7 @@ app.geometry("300x400")
 #Providers
 provider_label = ctk.CTkLabel(app, text="Provider")
 provider_label.pack()
-provider_dropdown = ctk.CTkOptionMenu(app, values=["gemini", "ollama - local", "claude - Amazon Bedrock"])
+provider_dropdown = ctk.CTkOptionMenu(app, values=["gemini", "ollama", "claude - Amazon Bedrock"])
 provider_dropdown.pack()
 provider_dropdown.set(ACTIVE_PROVIDER)
 #API KEY

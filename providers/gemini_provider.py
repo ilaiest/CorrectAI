@@ -1,9 +1,9 @@
 from google import genai
 from config import API_KEY, MODEL
-from base  import BaseProvider
+from providers.base import BaseProvider
 
 class GeminiProvider(BaseProvider):
-    def call_api(self, prompt):
+    def correct(self, prompt):
         if not API_KEY:
             return "API key not configured. Please check your settings."
         try:

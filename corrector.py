@@ -1,4 +1,5 @@
 from providers.gemini_provider import GeminiProvider
+from providers.ollama_provider import OllamaProvider
 from config import ACTIVE_PROVIDER as model_option
 
 def text_corrector(text):
@@ -9,11 +10,13 @@ Cambios importantes: máximo 3.
 Texto: {text}
 """
     if model_option == "gemini":
-        gemini= GeminiProvider()
-        model_output = gemini.call_api(prompt)
+        provider = GeminiProvider()
+    elif model_option == "ollama":
+        provider = OllamaProvider()
     elif model_option == "bedrock":
-        # Handle other models if needed
-        print("Bedrock model selected, but not implemented yet.")
+        return {"response": "Model not supported yet. Please change your settings"}
+    # Handle other models if needed
     else:
-        model_output = "Model not supported. Please check your settings."
+        return {"response": "Model not supported. Please check your settings."}
+    model_output = provider.correct(prompt)
     return  {"response": model_output}

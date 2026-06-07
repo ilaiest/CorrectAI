@@ -3,3 +3,5 @@ python-dotenv
 pyperclip
 pynput
 customtkinter
+requests
+ollama

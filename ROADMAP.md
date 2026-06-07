@@ -21,7 +21,7 @@
 - [x] Add `.env` support.
 - [x] Read model name from configuration.
 - [x] Validate missing Gemini API key.
-- [ ] Add a mock provider for testing without API calls.
+- [x] Add a mock provider for testing without API calls.
 
 ## v0.3 - Code Cleanup
 
@@ -48,10 +48,9 @@
 
 ## v0.6 - Local Provider Exploration
 
-- [ ] Test Ollama integration.
-- [ ] Try a small local model.
+- [x] Test Ollama integration.
+- [x] Try a small local model.
 - [ ] Compare speed and correction quality.
-- [ ] Document local setup limitations.
 
 ## v0.7 - Hotkey Runner
 
@@ -67,5 +66,4 @@
 - [x] Configure provider.
 - [x] Configure API key.
 - [x] Configure model.
-- [ ] Test provider connection.
 - [x] Configure hotkey.
