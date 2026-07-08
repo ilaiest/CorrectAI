@@ -1,69 +1,71 @@
 # CorrectAI Roadmap
 
-## v0.1 - Terminal Prototype
+## Product Focus
 
-- [x] Create `main.py`.
-- [x] Create `corrector.py`.
-- [x] Receive text from terminal.
-- [x] Validate empty input.
-- [x] Connect to Gemini.
-- [x] Return corrected text and important changes.
-- [x] Add basic API error handling.
-- [x] Measure execution time.
-- [x] Verify prompt encoding in editor.
-- [x] Move model name to a constant.
-- [x] Improve variable names for clarity.
+CorrectAI v1 has one clear job:
 
-## v0.2 - Configuration Basics
+```text
+Select text in any app -> press the hotkey -> CorrectAI corrects and replaces the selected text.
+```
 
-- [x] Add `requirements.txt`.
+The first public version should stay focused on fast in-place correction. Chatbot-style writing, email drafting, tone rewriting, and advanced composition features are intentionally out of scope for v1.
+
+## Completed Foundation
+
+- [x] Create terminal correction prototype.
+- [x] Add empty text validation.
+- [x] Add execution timing for terminal mode.
+- [x] Add `.env` configuration.
 - [x] Add `.gitignore`.
-- [x] Add `.env` support.
-- [x] Read model name from configuration.
-- [x] Validate missing Gemini API key.
-- [x] Add a mock provider for testing without API calls.
+- [x] Add `requirements.txt`.
+- [x] Define a shared provider interface.
+- [x] Add Gemini provider.
+- [x] Add Ollama provider.
+- [x] Add provider selection through configuration.
+- [x] Add clipboard correction workflow.
+- [x] Add global hotkey runner.
+- [x] Add minimal settings GUI.
+- [x] Document Gemini and Ollama setup.
 
-## v0.3 - Code Cleanup
+## v1 - In-Place Text Correction
 
-- [x] Extract shared correction timing logic.
-- [ ] Reduce duplicated input validation patterns.
-- [ ] Improve terminal output formatting.
+- [x] Simulate copy from selected text.
+- [x] Read selected text from the clipboard.
+- [x] Correct selected text with the active provider.
+- [x] Copy corrected text back to the clipboard.
+- [x] Paste corrected text into the active application.
+- [x] Use a stable default hotkey for replacement mode.
+- [x] Keep the correction prompt focused on direct corrected output.
+- [x] Refactor hotkey runner into copy, correct, and paste steps.
+- [x] Polish hotkey runner messages.
+- [ ] Test replacement flow in common apps.
+- [ ] Finalize recommended local model.
+- [x] Update README around the v1 scope.
+- [ ] Add basic release notes for v1.
 
-## v0.5 - Provider Design
+## v1 GUI Scope
 
-- [x] Define a common provider interface.
-- [x] Move Gemini logic into a provider module.
-- [x] Add provider selection.
-- [ ] Add provider-specific error messages.
+The GUI should support configuration only. It should not become a chatbot in v1.
 
-- [ ] Document provider setup.
-
-## v0.4 - Clipboard Workflow
-
-- [x] Add `pyperclip`.
-- [x] Read text from clipboard.
-- [x] Correct clipboard text.
-- [x] Copy corrected text back to clipboard.
-- [x] Add safe mode as the default behavior.
-
-## v0.6 - Local Provider Exploration
-
-- [x] Test Ollama integration.
-- [x] Try a small local model.
-- [ ] Compare speed and correction quality.
-
-## v0.7 - Hotkey Runner
-
-- [x] Explore `pynput` or alternatives.
-- [x] Add a background runner.
-- [x] Configure a global hotkey.
-- [x] Add safe clipboard hotkey mode.
-- [ ] Consider optional auto-replace mode.
-
-## v0.8 - Minimal GUI
-
-- [x] Add a small settings window.
 - [x] Configure provider.
 - [x] Configure API key.
 - [x] Configure model.
 - [x] Configure hotkey.
+- [x] Make the GUI feel like a simple main menu for v1.
+- [ ] Keep provider/model settings easy to understand.
+- [x] Add a Start CorrectAI action for the hotkey workflow.
+- [ ] Add Start/Stop behavior to the main action button.
+- [ ] Display hotkeys in a user-friendly format.
+
+## Post-v1 Ideas
+
+These are useful ideas, but they should not block v1.
+
+- [ ] Compose mode for drafting messages, emails, or replies.
+- [ ] Chatbot-style writing assistant.
+- [ ] Tone adjustment modes.
+- [ ] Optional explanation of corrections.
+- [ ] Provider connection test.
+- [ ] More detailed provider-specific error messages.
+- [ ] Speed and quality comparison between Gemini and local models.
+- [ ] Screenshots or demo GIF for the README.

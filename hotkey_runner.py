@@ -3,27 +3,47 @@ from pynput import keyboard
 from corrector import text_corrector
 import pyperclip
 import threading
+import time 
 
 is_correcting = False
+keyboard_controller = keyboard.Controller()
 
+def copy_selected_text():
+    pyperclip.copy("")
+    time.sleep(0.5)
+    with keyboard_controller.pressed(keyboard.Key.ctrl):
+        keyboard_controller.tap('c')
+    time.sleep(0.5)
+    copied_text = pyperclip.paste()
+    clean_copied_text = copied_text.strip()
+    return clean_copied_text
+
+def correct_selected_text(selected_text):
+    result = text_corrector(selected_text)
+    return result['response']
+
+def paste_corrected_text(corrected_text):
+    pyperclip.copy(corrected_text)
+    with keyboard_controller.pressed(keyboard.Key.ctrl):
+        keyboard_controller.tap('v')
+    print("Text corrected and pasted.")
 
 def run_clipboard_correction():
     global is_correcting
     print("Hotkey activated! Running text correction...")
-    print("Reading from clipboard...")
     try:
-        text = pyperclip.paste()
-        clean_text = text.strip()
-        if not clean_text:
-            print("No text found in clipboard. Please copy some text and try again.")
+        time.sleep(0.2)
+        selected_text = copy_selected_text()
+
+        if not selected_text:
+            print("No text selected")
             return
-        result = text_corrector(clean_text)
-        pyperclip.copy(result["response"])
-        print("Text corrected and copied to clipboard.")
+        corrected_text = correct_selected_text(selected_text)
+        paste_corrected_text(corrected_text)
+
     finally:
         is_correcting = False
-
-
+    
 def on_activate():
     global is_correcting
     if is_correcting:
@@ -42,4 +62,3 @@ with keyboard.GlobalHotKeys({
     EXIT_HOTKEY: on_exit
 }) as listener:
     listener.join()
-

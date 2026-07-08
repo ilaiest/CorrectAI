@@ -4,10 +4,11 @@ from config import ACTIVE_PROVIDER as model_option
 
 def text_corrector(text):
     prompt = f"""
-Corrige solo ortografía, acentos y puntuación. Conserva tono y palabras. No formalices ni des alternativas. Devuelve:
-Texto corregido:
-Cambios importantes: máximo 3.
-Texto: {text}
+Corrige únicamente errores de ortografía, acentos, puntuación y palabras mal escritas.
+Conserva el significado, tono y estilo del texto.
+No agregues explicaciones, títulos, comillas ni introducciones.
+Devuelve solo el texto corregido.
+Texto:{text}
 """
     if model_option == "gemini":
         provider = GeminiProvider()
