@@ -4,6 +4,10 @@ CorrectAI is a local-first desktop tool that corrects selected text in place.
 
 Select text in any app, press your hotkey, and CorrectAI replaces it with a corrected version while preserving your tone as much as possible.
 
+<p align="center">
+<img width="416" height="540" alt="image" src="https://github.com/user-attachments/assets/83da2135-7f07-447a-85f0-ca8cc2e64281" />
+</p>
+
 ## Why This Exists
 
 CorrectAI is part of a personal series of weekend projects.
