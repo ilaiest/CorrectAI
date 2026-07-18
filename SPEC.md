@@ -2,127 +2,205 @@
 
 ## Objective
 
-CorrectAI is an open source, local-first tool for correcting spelling, accents, and punctuation using AI. It should preserve the user's tone and wording as much as possible instead of rewriting text unnecessarily.
+CorrectAI is a local-first desktop tool for correcting selected text in place.
+
+The v1 objective is simple:
+
+```text
+Select text in any app -> press a hotkey -> replace it with corrected text.
+```
+
+CorrectAI should fix spelling, accents, punctuation, and clearly misspelled words while preserving the user's tone, meaning, and style as much as possible.
+
+## Product Scope
+
+### In Scope For v1
+
+- Correct selected text from other applications.
+- Simulate copy from the active selection.
+- Read selected text from the clipboard.
+- Correct text with the active provider.
+- Copy corrected text back to the clipboard.
+- Paste corrected text into the active application.
+- Provide a GUI for provider, model, API key, and hotkey configuration.
+- Support Gemini.
+- Support Ollama local models.
+- Keep configuration local through `.env`.
+
+### Out Of Scope For v1
+
+- Chatbot mode.
+- Email drafting.
+- Long-form writing assistant.
+- Tone rewriting modes.
+- Multi-step agent workflows.
+- Hosted backend.
+- Telemetry.
 
 ## Product Principles
 
 - Correct only what is necessary.
-- Preserve the user's tone.
+- Preserve the user's tone and intent.
 - Avoid making text more formal unless explicitly requested.
+- Return only the corrected text for the replacement workflow.
 - Keep user credentials local.
-- Make the active provider and model visible to the user.
-- Support multiple providers over time.
-- Prefer safe behavior by default.
+- Make provider and model configuration explicit.
+- Prefer local/offline options when practical.
 - Keep the code simple, readable, and auditable.
 
 ## Open Source Principles
 
-CorrectAI should be safe and understandable for other users to run on their own machines.
+CorrectAI should be understandable and safe for other users to run on their own machines.
 
 - No hosted backend by default.
 - No telemetry by default.
 - No API keys committed to the repository.
 - No hidden provider calls.
-- Text should only be sent to the provider selected by the user.
-- Local providers should be supported for users who prefer privacy or offline usage.
-
-## v0.1 - Terminal Prototype
-
-### Features
-
-- Receive text from terminal input.
-- Validate empty input before calling the model.
-- Send text to Gemini.
-- Return corrected text.
-- Return a short list of important changes.
-- Preserve tone and wording as much as possible.
-- Show execution time.
-- Handle basic API errors.
-
-### Out of Scope
-
-- GUI.
-- Clipboard integration.
-- Global hotkeys.
-- Multiple providers.
-- Persistent configuration.
-- `.env` support.
-- Automatic replacement of selected text in other apps.
+- Text should only be sent to the selected provider.
+- Local providers should be supported for users who prefer privacy or lower-cost usage.
+- Forks, issues, and pull requests should be welcome.
+- The code should stay approachable for people who are learning.
 
 ## Current Architecture
 
 ```text
+gui.py
+  settings UI
+  hotkey normalization/display
+  starts and stops the hotkey runner process
+
+hotkey_runner.py
+  listens for global hotkeys
+  copies selected text
+  calls the correction core
+  pastes corrected text back into the active app
+
 main.py
-  terminal input
-  input validation
-  execution timing
-  result display
+  terminal and clipboard test modes
 
 corrector.py
-  prompt construction
-  Gemini API call
-  basic API error handling
+  builds the correction prompt
+  selects the active provider
+  returns normalized correction output
+
+providers/
+  base.py
+    shared provider interface
+
+  gemini_provider.py
+    Gemini implementation
+
+  ollama_provider.py
+    Ollama implementation
+
+config.py
+  loads `.env` configuration
 ```
 
-## Future Architecture
-
-The project should move toward a provider-based design:
+## Correction Flow
 
 ```text
-CorrectAI core
-  builds correction requests
-  normalizes provider responses
-
-Providers
-  Gemini
-  Bedrock
-  Local/Ollama
-  Mock
-
-Interfaces
-  Terminal
-  Clipboard
-  Hotkey background runner
-  GUI settings panel
+selected text
+  -> simulated Ctrl+C
+  -> clipboard
+  -> corrector.py
+  -> active provider
+  -> corrected text
+  -> clipboard
+  -> simulated Ctrl+V
 ```
 
-The correction flow should eventually look like:
-
-```text
-input text -> corrector core -> selected provider -> normalized result -> output target
-```
-
-## Planned Providers
+## Providers
 
 ### Gemini
 
-Accessible cloud provider for early development and general users.
+Cloud provider option for users with a Gemini API key.
 
-### AWS Bedrock
+### Ollama
 
-Enterprise/cloud provider for users who already have AWS credentials and approved model access.
+Local provider option for users who want lower-cost or private local correction.
 
-### Local/Ollama
+Recommended local model for v1:
 
-Private/offline option. This may have lower quality or higher hardware requirements depending on the selected model.
+```text
+qwen2.5:7b
+```
 
-### Mock
+This model has been a good balance between correction quality and reasonable local resource usage.
 
-Development provider for testing application flow without spending tokens or calling external APIs.
+## Hotkey Behavior
 
-## Safety Modes
+The recommended default hotkey is:
 
-CorrectAI should support safe behavior before automatic behavior.
+```text
+F8
+```
 
-### Safe Clipboard Mode
+The internal `pynput` format is:
 
-The user copies text manually, CorrectAI corrects it, and the corrected version is copied back to the clipboard.
+```text
+<f8>
+```
 
-### Selection Mode
+The GUI should display user-friendly hotkeys such as:
 
-CorrectAI simulates copy, reads selected text, corrects it, and places the corrected text in the clipboard.
+```text
+F8
+Ctrl+Alt+Q
+```
 
-### Auto Replace Mode
+and save them internally as:
 
-CorrectAI corrects selected text and pastes the corrected version automatically. This should not be the default mode.
+```text
+<f8>
+<ctrl>+<alt>+q
+```
 
+Hotkeys involving `Ctrl`, `Alt`, `C`, or `V` may interfere with simulated copy/paste and should not be the recommended default.
+
+## GUI Requirements
+
+The v1 GUI should remain a small configuration and control surface.
+
+Required:
+
+- Select provider.
+- Set API key.
+- Set model.
+- Set hotkey.
+- Save settings.
+- Start CorrectAI.
+- Stop CorrectAI.
+- Show basic status messages.
+
+Not required for v1:
+
+- Chat interface.
+- Text editor.
+- Message composer.
+- Provider connection tester.
+
+## Safety Notes
+
+CorrectAI uses clipboard and keyboard automation. This means behavior may vary by application.
+
+The v1 workflow should be tested in common writing surfaces:
+
+- Notepad.
+- VSCode.
+- Browser text fields.
+- Email clients.
+- Slack or similar messaging apps.
+
+If a target app does not allow standard copy/paste shortcuts, the replacement workflow may not work reliably.
+
+## Future Directions
+
+Future versions may explore:
+
+- Compose mode for messages and emails.
+- Tone adjustment.
+- Optional explanation of corrections.
+- Provider connection testing.
+- Packaged desktop release.
+- Tray/background app behavior.

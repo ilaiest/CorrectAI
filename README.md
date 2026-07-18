@@ -1,132 +1,171 @@
 # CorrectAI
 
-CorrectAI is a local-first writing assistant for correcting spelling, accents, punctuation, and clearly misspelled words while preserving the user's tone and style.
+CorrectAI is a local-first desktop tool that corrects selected text in place.
 
-The project currently supports terminal correction, clipboard correction, global hotkeys, automatic replacement of selected text, a minimal settings GUI, Gemini, and Ollama local models.
+Select text in any app, press your hotkey, and CorrectAI replaces it with a corrected version while preserving your tone as much as possible.
 
-## Current Status
+## Why This Exists
 
-CorrectAI is still an early open source prototype, but the main correction workflows are functional.
+CorrectAI is part of a personal series of weekend projects.
 
-Current features:
+The goal is to keep practicing programming, avoid getting rusty, and keep learning by building small tools that solve real problems. I use AI as a learning partner during the process, but the point is not to let AI build everything for me. The point is to understand the code, make decisions, debug issues, and keep improving my own engineering skills.
+
+This first project started from a simple annoyance: writing emails, Slack messages, notes, or quick replies on a computer and not having a fast, system-wide way to correct spelling without copying text into another app.
+
+So CorrectAI became a way to explore a practical question:
+
+```text
+Can I build a low-cost or local AI correction tool that works directly where I am writing?
+```
+
+## Open Source
+
+CorrectAI is open source. If this project is useful, interesting, or close to something you want to improve, feel free to fork it, open an issue, suggest changes, or build your own version.
+
+This project is also meant to be readable for people who are learning. The code favors simple structure over clever abstractions so it is easier to inspect, modify, and learn from.
+
+## What It Does
+
+Current v1 focus:
+
+- Correct selected text directly in the active app.
+- Preserve tone and meaning.
+- Avoid rewriting more than necessary.
+- Support Gemini as a cloud provider.
+- Support Ollama as a local provider.
+- Provide a small GUI for settings and starting/stopping the runner.
+
+Out of scope for v1:
+
+- Chatbot writing assistant.
+- Email drafting.
+- Tone rewriting modes.
+- Long-form composition.
+
+Those may come later, but v1 is intentionally focused on fast in-place correction.
+
+## Current Features
 
 - Terminal correction mode.
 - Clipboard correction mode.
 - Global hotkey runner.
 - Selection replacement workflow.
 - Gemini provider.
-- Ollama local provider.
-- Minimal GUI for settings and starting the hotkey runner.
-- `.env` configuration.
+- Ollama provider.
+- GUI for provider, model, API key, and hotkey settings.
 - Local-first architecture with no hosted backend.
-
-Still in progress:
-
-- More robust provider-specific error messages.
-- Start/stop behavior for the GUI runner button.
-- Provider connection testing.
-- Quality and speed comparison between Gemini and local models.
-- More complete setup documentation for different machines.
 
 ## Privacy Model
 
-CorrectAI is designed to be local-first.
-
-- API keys stay on the user's machine.
+- API keys stay on your machine.
 - Text is sent only to the selected provider.
 - There is no hosted backend.
 - There is no telemetry by default.
 - Ollama can be used for local correction without sending text to a cloud provider.
-- Users are responsible for reviewing each provider's privacy and data handling policies.
+
+Users are responsible for reviewing each provider's privacy and data handling policies.
 
 ## Requirements
 
 - Python 3.10 or newer.
 - Git.
 - Optional: a Gemini API key.
-- Optional: Ollama for local models.
+- Optional: Ollama for local correction.
 
-Install Python dependencies:
+Install dependencies:
 
 ```powershell
 py -m pip install -r requirements.txt
 ```
 
+## Windows Release
+
+For non-technical users, the recommended way to try CorrectAI is to download the Windows executable from GitHub Releases.
+
+Download:
+
+```text
+CorrectAI.exe
+```
+
+Then open the app, choose a provider, save your settings, and press **Start CorrectAI**.
+
+The Windows executable does not include Ollama or local models. If you want to use local correction, install Ollama and download the recommended model first. See [OLLAMA_SETUP.md](OLLAMA_SETUP.md).
+
 ## Configuration
 
 Create a `.env` file in the project root. You can copy `.env.example` and adjust the values.
 
-For Gemini:
-
-```env
-ACTIVE_PROVIDER=gemini
-API_KEY=your_gemini_api_key_here
-MODEL=gemini-3.1-flash-lite-preview
-```
-
-For Ollama:
+Recommended local setup:
 
 ```env
 ACTIVE_PROVIDER=ollama
 API_KEY=
 MODEL=qwen2.5:7b
+HOTKEY=<f8>
+EXIT_HOTKEY=<ctrl>+<alt>+x
 ```
 
-Recommended local models:
+Gemini setup:
 
-- `qwen2.5:7b` for better correction quality.
-- `llama3.2:3b` for a lighter, faster option.
-- `llama3.1:8b` as another higher-quality option if your machine can handle it.
+```env
+ACTIVE_PROVIDER=gemini
+API_KEY=your_gemini_api_key_here
+MODEL=gemini-3.1-flash-lite-preview
+HOTKEY=<f8>
+EXIT_HOTKEY=<ctrl>+<alt>+x
+```
 
 ## Ollama Setup
 
-Install Ollama from:
+Install Ollama:
 
 ```text
 https://ollama.com/download
 ```
 
-Download a model:
+For a step-by-step setup guide, see [OLLAMA_SETUP.md](OLLAMA_SETUP.md).
+
+Recommended local model:
 
 ```powershell
 ollama pull qwen2.5:7b
 ```
 
-Check installed models:
+Useful commands:
 
 ```powershell
 ollama list
-```
-
-Test the model:
-
-```powershell
 ollama run qwen2.5:7b
-```
-
-Remove an unused model:
-
-```powershell
 ollama rm llama3.2:3b
 ```
 
-## Run Terminal Mode
+`qwen2.5:7b` has worked well as a local balance between correction quality and reasonable resource usage.
+
+## Run The GUI
 
 ```powershell
-py main.py
+py gui.py
 ```
 
-Choose terminal mode and enter the text you want to correct.
+From the GUI you can:
 
-## Run Clipboard Mode
+- Select provider.
+- Set API key.
+- Set model.
+- Set hotkey.
+- Save settings.
+- Start or stop CorrectAI.
 
-```powershell
-py main.py
+Recommended hotkey:
+
+```text
+F8
 ```
 
-Choose clipboard mode. CorrectAI reads the current clipboard text, corrects it, and copies the corrected text back to the clipboard.
+Hotkeys using `Ctrl`, `Alt`, `C`, or `V` can interfere with the simulated copy/paste workflow.
 
-## Run Hotkey Selection Mode
+## Run Hotkey Mode Directly
 
 ```powershell
 py hotkey_runner.py
@@ -134,40 +173,45 @@ py hotkey_runner.py
 
 Then:
 
-1. Select text in another application.
+1. Select text in any app.
 2. Press the configured hotkey.
-3. CorrectAI simulates copy, corrects the selected text, and pastes the corrected text back into the active app.
+3. CorrectAI simulates copy.
+4. CorrectAI sends the text to the active provider.
+5. CorrectAI pastes the corrected text back into the active app.
 
-For this workflow, a single-key hotkey such as `F8` is recommended. Hotkeys using `Ctrl`, `Alt`, `C`, or `V` can interfere with the simulated copy/paste flow.
+If you run the hotkey runner directly, use the exit hotkey to stop it:
 
-Example configuration:
-
-```env
-HOTKEY=<f8>
-EXIT_HOTKEY=<ctrl>+<alt>+x
+```text
+Ctrl+Alt+X
 ```
 
-Press the exit hotkey to stop the runner.
-
-## Run GUI
+## Run Terminal Or Clipboard Mode
 
 ```powershell
-py gui.py
+py main.py
 ```
 
-The GUI allows basic provider, API key, model, and hotkey configuration. It can also start the hotkey runner with the **Start CorrectAI** button.
+The terminal menu includes:
 
-Save settings before starting the runner so the active provider, model, and hotkey are loaded correctly.
+- Terminal input correction.
+- Clipboard correction.
+
+These modes are useful for testing, but the main v1 workflow is the GUI + hotkey replacement flow.
 
 ## Project Direction
 
-CorrectAI is planned as an open source desktop writing assistant with multiple correction workflows:
+CorrectAI v1 is intentionally small:
 
-- Safe clipboard correction.
-- Selection-based correction.
-- Optional automatic replacement.
-- Cloud providers such as Gemini.
-- Local providers such as Ollama.
-- A GUI for settings and manual correction.
+```text
+Selected text -> hotkey -> correction -> replacement
+```
 
-The long-term goal is to make quick correction feel natural across apps like Slack, email, notes, browsers, and editors while keeping the code simple and auditable.
+Future versions may explore a compose mode, message drafting, tone adjustment, or a chatbot-style assistant. For now, the priority is keeping the core workflow simple, understandable, and useful.
+
+## Credits
+
+- Verificado iconos creados por NX Icon - Flaticon: https://www.flaticon.es/iconos-gratis/verificado
+
+## License
+
+MIT License. See [LICENSE](LICENSE).

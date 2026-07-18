@@ -14,3 +14,11 @@ venv/
 
 #Kiro Chat
 CorrectAI.json
+
+# PyInstaller
+build/
+dist/
+*.spec
+
+#Roadmap
+ROADMAP.md

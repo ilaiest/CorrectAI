@@ -7,6 +7,7 @@ import time
 
 is_correcting = False
 keyboard_controller = keyboard.Controller()
+hotkey_listener = None
 
 def copy_selected_text():
     pyperclip.copy("")
@@ -55,10 +56,22 @@ def on_activate():
 
 def on_exit():
     print("Exit hotkey activated! Exiting the program...")
-    listener.stop()
+    stop_hotkey_listener()
 
-with keyboard.GlobalHotKeys({
-    HOTKEY: on_activate,
-    EXIT_HOTKEY: on_exit
-}) as listener:
-    listener.join()
+def stop_hotkey_listener():
+    global hotkey_listener
+    if hotkey_listener is not None:
+        hotkey_listener.stop()
+
+def run_hotkey_listener(hotkey=HOTKEY, exit_hotkey=EXIT_HOTKEY):
+    global hotkey_listener
+    with keyboard.GlobalHotKeys({
+        hotkey: on_activate,
+        exit_hotkey: on_exit
+    }) as listener:
+        hotkey_listener = listener
+        listener.join()
+        hotkey_listener = None
+
+if __name__ == "__main__":
+    run_hotkey_listener()

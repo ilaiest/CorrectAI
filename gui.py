@@ -3,7 +3,13 @@ import os
 from dotenv import load_dotenv
 import subprocess
 import sys
+import ollama
 from pathlib import Path
+from hotkey_runner import run_hotkey_listener
+
+if "--runner" in sys.argv:
+    run_hotkey_listener()
+    sys.exit(0)
 
 ctk.set_appearance_mode("dark")
 runner_process = None
@@ -31,15 +37,48 @@ MODEL = os.getenv("MODEL", "gemini-3.1-flash-lite-preview")
 HOTKEY = os.getenv("HOTKEY", "<f8>")
 EXIT_HOTKEY = os.getenv("EXIT_HOTKEY", "<ctrl>+<alt>+x")
 
-def start_runner():
+def get_provider_warning():
+    if provider_dropdown.get() == "gemini" and not api_key_entry.get().strip():
+        return "Gemini API Key required."
+    elif provider_dropdown.get() == "ollama":
+        try:
+            selected_model = model_entry.get().strip()
+            if not selected_model:
+                return "Ollama model is required."
+
+            models_response = ollama.list()
+            installed_models = []
+            for model in models_response.models:
+                installed_models.append(model.model)
+
+            if selected_model not in installed_models:
+                return f"Ollama model not found. Run: ollama pull {selected_model}"
+        except Exception as e:
+            return f"Ollama check failed: {type(e).__name__}: {e}"
+    
+
+def toggle_runner():
     global runner_process
 
     if runner_process is not None and runner_process.poll() is None:
         #already running
+        runner_process.terminate()
+        runner_process = None
+        run_button.configure(text="Start CorrectAI")
+        changes_saved_label.configure(text="CorrectAI stopped! ❌", text_color=MUTED_TEXT_COLOR)
         return
-    runner_path = Path(__file__).with_name("hotkey_runner.py")
-    runner_process = subprocess.Popen([sys.executable, str(runner_path)])
+    warning = get_provider_warning()
+    if warning:
+        changes_saved_label.configure(text=warning, text_color=MUTED_TEXT_COLOR)
+        return
+    if getattr(sys, "frozen", False):
+        runner_process = subprocess.Popen([sys.executable, "--runner"])
+    else:
+        runner_path = Path(__file__).with_name("hotkey_runner.py")
+        runner_process = subprocess.Popen([sys.executable, str(runner_path)])
+    run_button.configure(text="Stop CorrectAI")
     changes_saved_label.configure(text="CorrectAI is running! ✅", text_color=SUCCESS_COLOR)
+
 
 def test_con_logic():
     pass
@@ -72,6 +111,32 @@ def normalize_hotkey(user_input):
 
     return "+".join(normalized_parts)
 
+def display_hotkey(saved_hotkey):
+    display_names = {
+        "ctrl": "Ctrl",
+        "alt": "Alt",
+        "shift": "Shift",
+        "space": "Space",
+        "enter": "Enter",
+        "esc": "Esc",
+        "tab": "Tab",
+    }
+
+    parts = saved_hotkey.split("+")
+    display_parts = []
+
+    for part in parts:
+        clean_part = part.replace("<", "").replace(">", "")
+
+        if clean_part in display_names:
+            display_parts.append(display_names[clean_part])
+        elif clean_part.startswith("f") and clean_part[1:].isdigit():
+            display_parts.append(clean_part.upper())
+        else:
+            display_parts.append(clean_part.upper())
+
+    return "+".join(display_parts)
+
 def save_logic():
     with open(".env", "w") as f:
         f.write(f"ACTIVE_PROVIDER={provider_dropdown.get()}\n")
@@ -84,6 +149,9 @@ def save_logic():
 
 app = ctk.CTk()
 app.title("CorrectAI Settings")
+icon_path = Path(__file__).parent / "assets" / "correctai.ico"
+if icon_path.exists():
+    app.iconbitmap(str(icon_path))
 app.geometry("420x520")
 app.configure(fg_color=BG_COLOR)
 content_frame = ctk.CTkFrame(app, fg_color="transparent")
@@ -148,13 +216,13 @@ hotkey_entry = ctk.CTkEntry(
     font=INPUT_FONT,
 )
 hotkey_entry.pack()
-hotkey_entry.insert(0,HOTKEY or "")
+hotkey_entry.insert(0, display_hotkey(HOTKEY) if HOTKEY else "")
 #Save Button
 save_button = ctk.CTkButton(content_frame, text="Save", command=save_logic, width=220, height=36, fg_color=SECONDARY_COLOR, hover_color=SECONDARY_HOVER, text_color=TEXT_COLOR, corner_radius=8, font=BUTTON_FONT)
 save_button.pack(pady=(50,12))
 changes_saved_label = ctk.CTkLabel(content_frame, text="", text_color=MUTED_TEXT_COLOR, font=LABEL_FONT)
 changes_saved_label.pack()
 #Run Button
-run_button = ctk.CTkButton(content_frame, text="Start CorrectAI" , command=start_runner, width=220, height=44, fg_color=PRIMARY_COLOR, hover_color=PRIMARY_HOVER, text_color="#FFFFFF", corner_radius=8, font=BUTTON_FONT)
+run_button = ctk.CTkButton(content_frame, text="Start CorrectAI" , command=toggle_runner, width=220, height=44, fg_color=PRIMARY_COLOR, hover_color=PRIMARY_HOVER, text_color="#FFFFFF", corner_radius=8, font=BUTTON_FONT)
 run_button.pack(pady=15)
 app.mainloop()
